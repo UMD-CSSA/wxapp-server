@@ -8,5 +8,8 @@
     <artifactId>wxapp-server</artifactId>
     <version>0.1</version>
 
+    <properties>
+        <maven.compiler.release>13</maven.compiler.release>
+    </properties>
 
 </project>
