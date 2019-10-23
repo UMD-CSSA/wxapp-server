@@ -10,6 +10,7 @@ import com.firenio.component.ChannelAcceptor;
 import com.firenio.component.Frame;
 import com.firenio.component.IoEventHandle;
 import com.firenio.component.LoggerChannelOpenListener;
+import com.firenio.component.NioEventLoopGroup;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +36,6 @@ public class HelloWorld {
                         .orElse("[INFO] Nothing received.");
                 frame.setContent(channel.allocate());
 
-                //noinspection TextBlockMigration
                 final String content = "Hello World!\n" +
                         text + "\n\n" +
                         frame.getFrameName() + '\n' +
@@ -46,7 +46,9 @@ public class HelloWorld {
             }
         };
 
-        final var context = new ChannelAcceptor(6006);
+        final NioEventLoopGroup group = new NioEventLoopGroup();
+        group.setEnableMemoryPoolDirect(true);
+        final var context = new ChannelAcceptor(group, 6006);
         context.addChannelEventListener(new LoggerChannelOpenListener());
         context.setIoEventHandle(ioEventHandle);
         context.addProtocolCodec(new HttpCodec());
