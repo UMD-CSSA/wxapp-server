@@ -6,7 +6,7 @@
 
     <groupId>org.umd-cssa</groupId>
     <artifactId>wxapp-server</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 
     <properties>
         <maven.compiler.release>13</maven.compiler.release>
