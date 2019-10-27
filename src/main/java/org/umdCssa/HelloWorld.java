@@ -2,9 +2,6 @@ package org.umdCssa;
 
 import com.firenio.codec.http11.HttpCodec;
 import com.firenio.codec.http11.HttpFrame;
-import com.firenio.codec.http11.HttpHeader;
-import com.firenio.codec.http2.Http2Codec;
-import com.firenio.codec.lengthvalue.LengthValueCodec;
 import com.firenio.component.Channel;
 import com.firenio.component.ChannelAcceptor;
 import com.firenio.component.Frame;
@@ -13,14 +10,10 @@ import com.firenio.component.LoggerChannelOpenListener;
 import com.firenio.component.NioEventLoopGroup;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Optional;
 
 public class HelloWorld {
 
@@ -31,23 +24,32 @@ public class HelloWorld {
             @Override
             public void accept(@NotNull final Channel channel,
                                @NotNull final Frame frame) throws Exception {
-                final var text = Optional.ofNullable(
-                        frame.getStringContent())
-                        .orElse("[INFO] Nothing received.");
-                frame.setContent(channel.allocate());
+                final HttpFrame httpFrame = ((HttpFrame) frame);
+                final String
+                        url = httpFrame.getRequestURL(),
+                        text = httpFrame.getArrayContent() != null
+                                ? new String(httpFrame.getArrayContent())
+                                : "[NOTHING]";
+                final String content = "" +
+                        "Hello World!\n" +
+                        "\n" +
+                        "url=" + url + "\n" +
+                        "post=" + text + "\n" +
+                        "\n" +
+                        "\n" +
+                        "\n" +
+                        ZonedDateTime.now(ZoneId.of("America/New_York"))
+                                .format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
 
-                final String content = "Hello World!\n" +
-                        text + "\n\n" +
-                        frame.getFrameName() + '\n' +
-                        ZonedDateTime.now().format(
-                                DateTimeFormatter.ISO_ZONED_DATE_TIME);
-                frame.write(content, channel);
-                channel.writeAndFlush(frame);
+                httpFrame.setContent(channel.allocate());
+                httpFrame.write(content, channel);
+                channel.writeAndFlush(httpFrame);
             }
         };
 
         final NioEventLoopGroup group = new NioEventLoopGroup();
         group.setEnableMemoryPoolDirect(true);
+
         final var context = new ChannelAcceptor(group, 6006);
         context.addChannelEventListener(new LoggerChannelOpenListener());
         context.setIoEventHandle(ioEventHandle);
