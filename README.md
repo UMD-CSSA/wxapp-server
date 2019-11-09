@@ -65,6 +65,7 @@ pg        | `int [1, 142]`  | `1`     | Page number.
 Content-Type                | Content
 ---                         | ---
 `image/png` OR `image/jpeg` | Raw image.
+
 ---
 
 ### 2. MiniApp Login
@@ -92,6 +93,7 @@ Content:
 Key Name      | Key Type  | Value Type  | Example
 ---           | ---       | ---         | ---
 `3rd_session` | `String`  | `String`    | //TODO
+
 ---
 
 
