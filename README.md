@@ -88,8 +88,8 @@ Parameter(s):
 
 Content:
 
-| Key Name      | Key Type | Value Type | Example |
-| ------------- | -------- | ---------- | ------- |
+| Key Name       | Key Type | Value Type | Example |
+| -------------- | -------- | ---------- | ------- |
 | `_3rd_session` | `String` | `String`   | //TODO  |
 
 #### Example
@@ -98,24 +98,23 @@ Content:
 
 ```javascript
 wx.login({
-  success (res) {
+  success(res) {
     if (res.code) {
-
       wx.request({
-        url: 'https://wxapp.umd-cssa.org/api/v0/miniapp/login', //仅为示例，并非真实的接口地址
+        url: "https://wxapp.umd-cssa.org/api/v0/miniapp/login",
         data: {
-          code: res.code,
+          code: res.code
         },
-        success (res) {
-          if(statusCode === 200){
+        success(res) {
+          if (statusCode === 200) {
             // Store this sesssion for future use.
-            console.log(res.data._3rd_session)
+            console.log(res.data._3rd_session);
           }
         }
-      })
+      });
     }
   }
-})
+});
 ```
 
 ---
