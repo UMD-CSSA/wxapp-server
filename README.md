@@ -60,13 +60,12 @@ Key Name  | Value Type      | Example | Description
 :---:     | ---             | ---     | ---
 pg        | `int [1, 142]`  | `1`     | Page number.
 
+---
 #### Respond
 
 Content-Type                | Content
 ---                         | ---
 `image/png` OR `image/jpeg` | Raw image.
-
----
 
 ### 2. MiniApp Login
 
@@ -82,6 +81,7 @@ Key Name  | Value Type  | Example                             | Description
 :---:     | ---         | ---                                 | ---
 code      | `String`    | `0818RlAt1MmAef07eAat1PYoata18lAa`  | Code return from `wx.login()`.
 
+---
 #### Respond
 
 Content-Type        | Content
@@ -93,8 +93,6 @@ Content:
 Key Name      | Key Type  | Value Type  | Example
 ---           | ---       | ---         | ---
 `3rd_session` | `String`  | `String`    | //TODO
-
----
 
 
 
