@@ -22,8 +22,8 @@
 
 -   [**Important Versions**](#important-versions)
 -   [**API List**](#api-list)
-    1.   [Freshman Handbook Image](#freshman-handbook-image)
-    2.   [MiniApp Login](#miniapp-login)
+    1.   [Freshman Handbook Image (IP)](#freshman-handbook-image)
+    2.   [MiniApp Login (IP)](#miniapp-login)
 -   [Contributing](#contributing)
 -   [Authors](#authors)
 -   [License](#license)
