@@ -12,7 +12,7 @@
 
 **wxapp-server** is a backend server that provides API for [UMD CSSA Miniapp](https://github.com/UMD-CSSA/CSSA-MiniApp).
 
-_Last Modified on **Nov. 8th, 2019**._
+*Last Modified on **Nov. 8th, 2019**.*
 
 ## Contents
 
