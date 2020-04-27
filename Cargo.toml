@@ -1,0 +1,25 @@
+[package]
+name = "wxapp-server"
+version = "0.1.0"
+authors = ["Ziyan \"Jerry\" Chen <jerryc443@gmail.com>"]
+edition = "2018"
+description = "A backend server (API service) for UMD CSSA MiniApp."
+#documentation = "https://docs.rs/???"
+readme = "README.md"
+#homepage = "https://???.rs/"
+repository = "https://github.com/UMD-CSSA/wxapp-server"
+license = "GPL-3.0-or-later"
+keywords = ["server", "api", "backend"]
+categories = [
+    "web-programming::http-server"
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tiny_http = "^0"
+
+[profile.release]
+codegen-units = 1
+lto = true
+panic = 'abort'
