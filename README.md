@@ -24,13 +24,13 @@
 - [Authors](#authors)
 - [License](#license)
 
-## Important Versions
+## Important Constants
 
-|   Item   | Version                                        |
-| :------: | ---------------------------------------------- |
-| Host URL | `https://wxapp.umd-cssa.org/api/{API_VERSION}` |
-|   API    | `v0`                                           |
-| Handbook | `v2018`                                        |
+|   Item        | Version                                        |
+| :-----------: | ---------------------------------------------- |
+| Host URL      | `https://wxapp.umd-cssa.org/api/{API_VERSION}` |
+| API Ver.      | `v0`                                           |
+| Handbook Ver. | `v2018`                                        |
 
 ## API List
 
