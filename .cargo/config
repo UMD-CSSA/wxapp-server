@@ -1,0 +1,24 @@
+[alias]
+b = "build"
+br = "build --release"
+c = """\
+clippy -- \
+-Wclippy::all \
+-Wclippy::nursery \
+-Wclippy::cargo \
+"""
+t = "test"  # "-- --nocapture"
+tr = "test --release"
+r = "run"
+rr = "run --release"
+
+[build]
+rustflags = [
+    "-C",
+    "link-arg=-s",
+    "-C",
+    "target-cpu=native"
+]
+
+#[target.x86_64-unknown-linux-gnu]
+#runner = 'sudo -E'
