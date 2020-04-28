@@ -1,11 +1,9 @@
-#![feature(const_transmute)]
 #![feature(maybe_uninit_extra)]
+#![feature(maybe_uninit_ref)]
 #![feature(thread_id_value)]
-#![feature(thread_spawn_unchecked)]
 
 use std::fmt::Write;
-use std::mem::size_of;
-use std::mem::transmute;
+use std::mem::MaybeUninit;
 use std::thread;
 
 use tiny_http::{Header, Server};
@@ -18,41 +16,44 @@ pub mod constants;
 pub mod my_err;
 pub mod utils;
 
-static mut CONTENT_TYPE_JSON_HEADER: Header =
-  unsafe { transmute([0xFF_u8; size_of::<Header>()]) };
-pub(crate) static mut DATE_HEADER_EMPTY: Header =
-  unsafe { transmute([0xFF_u8; size_of::<Header>()]) };
-pub(crate) static mut SERVER_HEADER_EMPTY: Header =
-  unsafe { transmute([0xFF_u8; size_of::<Header>()]) };
+static mut CONTENT_TYPE_JSON_HEADER: MaybeUninit<Header> = MaybeUninit::uninit();
+pub(crate) static mut DATE_HEADER_EMPTY: MaybeUninit<Header> = MaybeUninit::uninit();
+pub(crate) static mut SERVER_HEADER_EMPTY: MaybeUninit<Header> = MaybeUninit::uninit();
 
 fn main() -> Result<(), MyErr> {
   // cache variables
   {
     // content-type:json
-    unsafe {
+    {
       let key = "Content-Type";
-      CONTENT_TYPE_JSON_HEADER = Header::from_bytes(key, "application/json")
-        .map_err(|err| MyErr::from_str(format!(
-          "Failed to generate the header [{}]! Err: {:?}", key, err
-        ), file!(), line!() - 3))?;
+      unsafe {
+        CONTENT_TYPE_JSON_HEADER.write(Header::from_bytes(key, "application/json")
+          .map_err(|err| MyErr::from_str(format!(
+            "Failed to generate the header [{}]! Err: {:?}", key, err
+          ), file!(), line!() - 3))?);
+      }
     }
 
     // date
-    unsafe {
+    {
       let key = "Date";
-      DATE_HEADER_EMPTY = Header::from_bytes(key, "")
-        .map_err(|err| MyErr::from_str(format!(
-          "Failed to generate the header [{}]! Err: {:?}", key, err
-        ), file!(), line!() - 3))?;
+      unsafe {
+        DATE_HEADER_EMPTY.write(Header::from_bytes(key, "")
+          .map_err(|err| MyErr::from_str(format!(
+            "Failed to generate the header [{}]! Err: {:?}", key, err
+          ), file!(), line!() - 3))?);
+      }
     }
 
     // server
-    unsafe {
+    {
       let key = "Server";
-      SERVER_HEADER_EMPTY = Header::from_bytes(key, "")
-        .map_err(|err| MyErr::from_str(format!(
-          "Failed to generate the header [{}]! Err: {:?}", key, err
-        ), file!(), line!() - 3))?;
+      unsafe {
+        SERVER_HEADER_EMPTY.write(Header::from_bytes(key, "")
+          .map_err(|err| MyErr::from_str(format!(
+            "Failed to generate the header [{}]! Err: {:?}", key, err
+          ), file!(), line!() - 3))?);
+      }
     }
   }
 
@@ -105,10 +106,12 @@ fn main() -> Result<(), MyErr> {
                   // ).send()?;
                 }
 
+                println!("1");
                 let resp =
                   str_response(format!(
                     "{{\"_3rd_session\":\"{}\"}}", _3rd_session))
-                    .with_header(unsafe { CONTENT_TYPE_JSON_HEADER.clone() });
+                    .with_header(unsafe { CONTENT_TYPE_JSON_HEADER.get_ref() }.clone());
+                println!("11");
 
                 req.respond(resp).map_err(
                   |err| MyErr::from_err(&err, file!(), line!() - 1))
