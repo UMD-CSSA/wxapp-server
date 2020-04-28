@@ -21,4 +21,6 @@ pub(crate) fn str_response<T: Into<String>>(str: T) -> Response<Cursor<Vec<u8>>>
 #[inline]
 pub(crate) fn code_response(code: u16) -> Response<Empty> {
   Response::empty(code)
+    .with_header(unsafe { DATE_HEADER_EMPTY.read() })
+    .with_header(unsafe { SERVER_HEADER_EMPTY.read() })
 }

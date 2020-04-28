@@ -60,21 +60,22 @@ fn main() -> Result<(), MyErr> {
 
   for req in server.incoming_requests() {
     let url = req.url();
-    let remote_addr =req.remote_addr();
-    println!("[{:^7}] @ [{}] from {}", req.method().as_str(), url, remote_addr);
+    let remote_addr = req.remote_addr();
+    println!("[{:^7}] from {} @ [{}]", req.method().as_str(), remote_addr, url);
 
-    // filter requests that do not come from [/api/{API_VERSION}]
+    // filter requests that do not come from [/{API_VERSION}]
     if url.len() < API_VERSION.len() || !url.starts_with(API_VERSION) {
-      return req.respond(code_response(403)).map_err(
-        |err| MyErr::from_err(&err, file!(), line!() - 1));
+      req.respond(code_response(403)).map_err(
+        |err| MyErr::from_err(&err, file!(), line!() - 1))?;
+      continue;
     }
 
     // handle real request
-    unsafe {
+    {
       thread::Builder::new()
         .name(remote_addr.to_string())
         .stack_size(1024)
-        .spawn(move || {
+        .spawn(move ||
           {
             let url = req.url();
             if url[API_VERSION.len()..].starts_with(MINIAPP_LOGIN_URL) {
@@ -101,7 +102,7 @@ fn main() -> Result<(), MyErr> {
                 let resp =
                   str_response(format!(
                     "{{\"_3rd_session\":\"{}\"}}", _3rd_session))
-                    .with_header(CONTENT_TYPE_JSON_HEADER.read());
+                    .with_header(unsafe { CONTENT_TYPE_JSON_HEADER.read() });
 
                 req.respond(resp).map_err(
                   |err| MyErr::from_err(&err, file!(), line!() - 1))
@@ -126,12 +127,13 @@ fn main() -> Result<(), MyErr> {
               }
             }
           }
-        })
+        )
         .map_err(|err| MyErr::from_err(&err, file!(), line!()))?;
     }
 
     println!("Ready for new connection!");
   }
 
+  println!("Quit!");
   Ok(())
 }
