@@ -106,12 +106,10 @@ fn main() -> Result<(), MyErr> {
                   // ).send()?;
                 }
 
-                println!("1");
                 let resp =
                   str_response(format!(
                     "{{\"_3rd_session\":\"{}\"}}", _3rd_session))
                     .with_header(unsafe { CONTENT_TYPE_JSON_HEADER.get_ref() }.clone());
-                println!("11");
 
                 req.respond(resp).map_err(
                   |err| MyErr::from_err(&err, file!(), line!() - 1))
