@@ -12,3 +12,7 @@ pub(crate) const DEFAULT_IPV6_ADDR: Ipv6Addr = Ipv6Addr::LOCALHOST;
 pub(crate) fn default_ipv4_sockaddr() -> SocketAddrV4 {
   SocketAddrV4::new(DEFAULT_IPV4_ADDR, DEFAULT_PORT)
 }
+
+// api version
+pub(crate) const API_PREFIX: &str = "/api/";
+pub(crate) const API_VERSION: &str = "v0/";
