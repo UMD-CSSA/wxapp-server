@@ -14,5 +14,4 @@ pub(crate) fn default_ipv4_sockaddr() -> SocketAddrV4 {
 }
 
 // api version
-pub(crate) const API_PREFIX: &str = "/api/";
-pub(crate) const API_VERSION: &str = "v0/";
+pub(crate) const API_VERSION: &str = "/v0/";
