@@ -15,3 +15,4 @@ pub(crate) fn default_ipv4_sockaddr() -> SocketAddrV4 {
 
 // api version
 pub(crate) const API_VERSION: &str = "/v0/";
+pub(crate) const MINIAPP_LOGIN_URL: &str = "miniapp/login";
