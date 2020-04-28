@@ -1,8 +1,11 @@
+#![feature(const_transmute)]
 #![feature(maybe_uninit_extra)]
+#![feature(thread_id_value)]
 #![feature(thread_spawn_unchecked)]
 
 use std::fmt::Write;
-use std::mem::MaybeUninit;
+use std::mem::size_of;
+use std::mem::transmute;
 use std::thread;
 
 use tiny_http::{Header, Server};
@@ -15,12 +18,12 @@ pub mod constants;
 pub mod my_err;
 pub mod utils;
 
-static mut CONTENT_TYPE_JSON_HEADER: MaybeUninit<Header> =
-  MaybeUninit::uninit();
-pub(crate) static mut DATE_HEADER_EMPTY: MaybeUninit<Header> =
-  MaybeUninit::uninit();
-pub(crate) static mut SERVER_HEADER_EMPTY: MaybeUninit<Header> =
-  MaybeUninit::uninit();
+static mut CONTENT_TYPE_JSON_HEADER: Header =
+  unsafe { transmute([0xFF_u8; size_of::<Header>()]) };
+pub(crate) static mut DATE_HEADER_EMPTY: Header =
+  unsafe { transmute([0xFF_u8; size_of::<Header>()]) };
+pub(crate) static mut SERVER_HEADER_EMPTY: Header =
+  unsafe { transmute([0xFF_u8; size_of::<Header>()]) };
 
 fn main() -> Result<(), MyErr> {
   // cache variables
@@ -28,28 +31,28 @@ fn main() -> Result<(), MyErr> {
     // content-type:json
     unsafe {
       let key = "Content-Type";
-      CONTENT_TYPE_JSON_HEADER.write(Header::from_bytes(key, "application/json")
+      CONTENT_TYPE_JSON_HEADER = Header::from_bytes(key, "application/json")
         .map_err(|err| MyErr::from_str(format!(
           "Failed to generate the header [{}]! Err: {:?}", key, err
-        ), file!(), line!() - 3))?);
+        ), file!(), line!() - 3))?;
     }
 
     // date
     unsafe {
       let key = "Date";
-      DATE_HEADER_EMPTY.write(Header::from_bytes(key, "")
+      DATE_HEADER_EMPTY = Header::from_bytes(key, "")
         .map_err(|err| MyErr::from_str(format!(
           "Failed to generate the header [{}]! Err: {:?}", key, err
-        ), file!(), line!() - 3))?);
+        ), file!(), line!() - 3))?;
     }
 
     // server
     unsafe {
       let key = "Server";
-      SERVER_HEADER_EMPTY.write(Header::from_bytes(key, "")
+      SERVER_HEADER_EMPTY = Header::from_bytes(key, "")
         .map_err(|err| MyErr::from_str(format!(
           "Failed to generate the header [{}]! Err: {:?}", key, err
-        ), file!(), line!() - 3))?);
+        ), file!(), line!() - 3))?;
     }
   }
 
@@ -74,9 +77,12 @@ fn main() -> Result<(), MyErr> {
     {
       thread::Builder::new()
         .name(remote_addr.to_string())
-        .stack_size(1024)
         .spawn(move ||
           {
+            println!("Request from [{}] has been moved to thread [{}]!",
+                     thread::current().name().unwrap_or_default(),
+                     thread::current().id().as_u64());
+
             let url = req.url();
             if url[API_VERSION.len()..].starts_with(MINIAPP_LOGIN_URL) {
               // handle wxapp login
@@ -102,7 +108,7 @@ fn main() -> Result<(), MyErr> {
                 let resp =
                   str_response(format!(
                     "{{\"_3rd_session\":\"{}\"}}", _3rd_session))
-                    .with_header(unsafe { CONTENT_TYPE_JSON_HEADER.read() });
+                    .with_header(unsafe { CONTENT_TYPE_JSON_HEADER.clone() });
 
                 req.respond(resp).map_err(
                   |err| MyErr::from_err(&err, file!(), line!() - 1))
@@ -130,10 +136,7 @@ fn main() -> Result<(), MyErr> {
         )
         .map_err(|err| MyErr::from_err(&err, file!(), line!()))?;
     }
-
-    println!("Ready for new connection!");
   }
 
-  println!("Quit!");
   Ok(())
 }

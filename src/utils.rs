@@ -14,13 +14,13 @@ pub(crate) const fn is_debug() -> bool {
 #[inline]
 pub(crate) fn str_response<T: Into<String>>(str: T) -> Response<Cursor<Vec<u8>>> {
   Response::from_string(str)
-    .with_header(unsafe { DATE_HEADER_EMPTY.read() })
-    .with_header(unsafe { SERVER_HEADER_EMPTY.read() })
+    .with_header(unsafe { DATE_HEADER_EMPTY.clone() })
+    .with_header(unsafe { SERVER_HEADER_EMPTY.clone() })
 }
 
 #[inline]
 pub(crate) fn code_response(code: u16) -> Response<Empty> {
   Response::empty(code)
-    .with_header(unsafe { DATE_HEADER_EMPTY.read() })
-    .with_header(unsafe { SERVER_HEADER_EMPTY.read() })
+    .with_header(unsafe { DATE_HEADER_EMPTY.clone() })
+    .with_header(unsafe { SERVER_HEADER_EMPTY.clone() })
 }
