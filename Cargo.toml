@@ -19,6 +19,8 @@ categories = [
 [dependencies]
 tiny_http = "^0"
 minreq = { version = "^2", features = ["https"] }
+num_cpus = "^1"
+threadpool = "^1"
 
 [profile.release]
 codegen-units = 1
