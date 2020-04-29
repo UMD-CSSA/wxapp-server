@@ -2,6 +2,7 @@
 #![feature(maybe_uninit_ref)]
 #![feature(thread_id_value)]
 
+use std::cmp::max;
 use std::fmt::Write;
 use std::mem::MaybeUninit;
 use std::thread;
@@ -62,7 +63,7 @@ fn main() -> Result<(), MyErr> {
   let threadpool;
   {
     threadpool = ThreadPool::new(
-      (num_cpus::get() as f32 * 1.5) as usize);
+      max(4, (num_cpus::get() as f32 * 1.5) as usize));
     println!("Threadpool built with [{}/{}] threads!",
              threadpool.active_count(), threadpool.max_count());
   }
@@ -121,7 +122,7 @@ fn handle_wxapp_login(req: Request) -> Result<(), MyErr> {
   }
 
   // request wxapp server
-  let _3rd_session ;//todo
+  let _3rd_session;//todo
   {
     let code = &param[ptn.len()..];
     println!("wxapp code: {}", code);
