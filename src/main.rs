@@ -121,10 +121,12 @@ fn handle_wxapp_login(req: Request) -> Result<(), MyErr> {
   }
 
   // request wxapp server
-  let _3rd_session = "";//todo
+  let _3rd_session ;//todo
   {
     let code = &param[ptn.len()..];
     println!("wxapp code: {}", code);
+    _3rd_session = format!("Your code was: {}, this API is still under construction!", code);
+
     // let response = minreq::get(
     //   "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code"
     // ).send()?;
